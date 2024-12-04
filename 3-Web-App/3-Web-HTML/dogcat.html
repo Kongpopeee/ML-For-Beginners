@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable Machine Image Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #webcam-container {
+            margin: 20px 0;
+            border: 2px solid #333;
+            border-radius: 10px;
+        }
+        #label-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #label-container div {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teachable Machine Image Classification</h1>
+    <button type="button" onclick="init()">Start Webcam</button>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <!----- ป้อน javascript จาก Teachable Machine ที่นี่ --->
+  
+</body>
+</html>
