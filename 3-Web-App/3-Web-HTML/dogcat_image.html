@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable Machine Image Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #image-container {
+            margin: 20px 0;
+            max-width: 400px;
+            border: 2px solid #333;
+            border-radius: 10px;
+        }
+        #image-container img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+        #label-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #label-container div {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        input[type="file"], button {
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teachable Machine Image Classification</h1>
+    
+    <input type="file" id="image-upload" accept="image/*">
+    <div id="image-container"></div>
+    <div id="label-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+      
+        // IMPORTANT: Replace this URL with your own model URL from Teachable Machine
+        const URL = "ป้อน URL ของ Teachable Machine ที่นี่";
+        
+        let model, maxPredictions;
+
+        // Load the model
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            
+            // load the model and metadata
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            // Clear previous predictions
+            const labelContainer = document.getElementById("label-container");
+            labelContainer.innerHTML = '';
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        }
+
+        // Predict the uploaded image
+        async function predict() {
+            // Get the uploaded image
+            const imageContainer = document.getElementById("image-container");
+            const image = imageContainer.getElementsByTagName('img')[0];
+            
+            if (!image) {
+                alert("Please upload an image first");
+                return;
+            }
+
+            // Make prediction
+            const prediction = await model.predict(image);
+            
+            // Display predictions
+            const labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction =
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[i].innerHTML = classPrediction;
+            }
+        }
+
+        // Handle image upload
+        document.getElementById('image-upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const imageContainer = document.getElementById('image-container');
+            
+            // Clear previous image and predictions
+            imageContainer.innerHTML = '';
+            
+            // Create image element
+            const img = document.createElement('img');
+            img.file = file;
+            imageContainer.appendChild(img);
+
+            // Read the file
+            const reader = new FileReader();
+            reader.onload = (function(aImg) { 
+                return function(e) { 
+                    aImg.src = e.target.result; 
+                }; 
+            })(img);
+            reader.readAsDataURL(file);
+
+            // Initialize model and prepare for prediction
+            init().then(() => {
+                // Predict after a short delay to ensure image is loaded
+                setTimeout(predict, 100);
+            });
+        });
+    </script>
+</body>
+</html>
